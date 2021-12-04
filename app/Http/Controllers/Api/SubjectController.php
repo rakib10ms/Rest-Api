@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use DB;
-use App\Models\Classs;
-use validator;
-class ClassController extends Controller
+use App\Models\Subject;
+
+class SubjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +15,8 @@ class ClassController extends Controller
      */
     public function index()
     {
-        $class=DB::table('classses')->get();
-        return response()->json($class);
+       $allSubjects= Subject::all();
+       return response()->json($allSubjects);
     }
 
     /**
@@ -38,14 +37,14 @@ class ClassController extends Controller
      */
     public function store(Request $request)
     {
-      $validate=$request->validate(
-          ['class_name'=>'required|unique:classses']
-      );
-      $data=new Classs;
-      $data->class_name=$request->class_name;
-      $data->save();
-
-      return response()->json("ClassName added");
+        $validate=$request->validate(
+            ['class_id'=>'required',
+            'subject_code'=>'required|unique:subjects' ,
+            'subject_code'=>'required|unique:subjects'
+            ]
+        );
+        $subjet=Subject::create($request->all());
+        return response('inserted');
     }
 
     /**
@@ -79,14 +78,7 @@ class ClassController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validate=$request->validate(
-            ['class_name'=>'required|unique:classses']
-        );
-        $data=[];
-        $data['class_name']=$request->class_name;
-        Classs::where('id',$id)->update($data);
-        return response('data updated');
-        
+        //
     }
 
     /**
@@ -97,7 +89,7 @@ class ClassController extends Controller
      */
     public function destroy($id)
     {
-        $delete=Classs::find($id)->delete();
-        return response()->json('data deleted');
+      $delete= Subject::find($id)->delete();
+      return response()->json('subejct deleted');
     }
 }
